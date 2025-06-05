@@ -1,4 +1,5 @@
 const dotenv = require ('dotenv');
+dotenv.config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -8,20 +9,23 @@ const Event = require('./models/Event');
 const Email = require('./models/Email');
 
 const app = express();
-const PORT = 5000;
-dotenv.config();
+const PORT =  process.env.PORT || 5000;
+
 
 // Middleware
 app.use(cors());
 app.use(express.json()); // ⬅️ Important: needed to parse JSON POST requests
 
 // MongoDB connection
-//'mongodb://localhost:27017/allevents'
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+  app.get('/', (req, res) => {
+  res.send('Backend server is running!');
+});
 
 // Route: Get all events
 app.get('/api/events', async (req, res) => {
